@@ -64,13 +64,17 @@ bot.on("message", async (msg) => {
 });
 
 app.post("/web-data", async (req, res) => {
-  const { queryId, totalPrice, products } = req.body;
+  const { queryId, totalPrice, products = [] } = req.body;
   try {
     await bot.answerWebAppQuery(queryId, {
       type: "article",
       id: queryId,
       title: "Success deal!",
-      input_message_content: { message_text: "Success deal!" + totalPrice },
+      input_message_content: {
+        message_text: `Success deal: ${totalPrice}, ${products
+          .map((item) => item.title)
+          .join(" ,")}`,
+      },
     });
     return res.status(200).json({});
   } catch (error) {
